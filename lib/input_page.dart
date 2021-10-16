@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'GenderCard.dart';
+import 'InputContainer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+const activeCardColour = Color(0xff1D1E33);
+const inactiveCardColour = Color(0xff111328);
+
+enum GenderChoice { male, female }
 
 class InputPage extends StatefulWidget {
   @override
@@ -7,6 +14,10 @@ class InputPage extends StatefulWidget {
 }
 
 class _InputPageState extends State<InputPage> {
+  Color maleCardColour = inactiveCardColour;
+  Color femaleCardColour = inactiveCardColour;
+  GenderChoice selectedGender;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +32,14 @@ class _InputPageState extends State<InputPage> {
                   children: <Widget>[
                     Expanded(
                       child: InputContainer(
-                        newColor: Color(0xff1D1E33),
+                        onPress: () {
+                          setState(() {
+                            selectedGender = GenderChoice.male;
+                          });
+                        },
+                        newColor: selectedGender == GenderChoice.male
+                            ? activeCardColour
+                            : inactiveCardColour,
                         cardChild: GenderCard(
                           labelText: "MALE",
                           genderIcon: FontAwesomeIcons.mars,
@@ -30,11 +48,18 @@ class _InputPageState extends State<InputPage> {
                     ),
                     Expanded(
                       child: InputContainer(
+                        onPress: () {
+                          setState(() {
+                            selectedGender = GenderChoice.female;
+                          });
+                        },
                         cardChild: GenderCard(
                           labelText: "FEMALE",
                           genderIcon: FontAwesomeIcons.venus,
                         ),
-                        newColor: Color(0xff1D1E33),
+                        newColor: selectedGender == GenderChoice.female
+                            ? activeCardColour
+                            : inactiveCardColour,
                       ),
                     ),
                   ],
@@ -63,51 +88,5 @@ class _InputPageState extends State<InputPage> {
                 ))
           ],
         ));
-  }
-}
-
-class GenderCard extends StatelessWidget {
-  GenderCard({this.labelText, this.genderIcon});
-  final String labelText;
-  final IconData genderIcon;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: <Widget>[
-        Icon(
-          genderIcon,
-          size: 90,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        Text(
-          labelText,
-          style: TextStyle(color: Colors.white, fontSize: 20),
-        )
-      ],
-    );
-  }
-}
-
-class InputContainer extends StatelessWidget {
-  InputContainer(
-      {@required this.newColor,
-      this.cardChild}); //constructor, and {} makes it possible to use key-value pairs, referring to the param name
-  final Color newColor; // <- Final key-word forces the variable immutable
-  final Widget cardChild;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: cardChild,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadiusDirectional.circular(10),
-        color: newColor, //uses color passed in as param
-      ),
-      margin: EdgeInsets.all(10),
-    );
   }
 }
